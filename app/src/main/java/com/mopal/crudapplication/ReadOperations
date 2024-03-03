@@ -1,0 +1,71 @@
+Button btnget = findViewById(R.id.btnget);
+        final EditText idEditText = findViewById(R.id.editTextId); // Assuming you have an EditText for entering ID
+
+        btnget.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Connection connection = connectionclass();
+                try {
+                    if (connection != null) {
+                        String sqlQuery = "SELECT * FROM GrandMasterRank WHERE GameID = ? " +
+                                "UNION ALL " +
+                                "SELECT * FROM ChallengerRank WHERE GameID = ? " +
+                                "UNION ALL " +
+                                "SELECT * FROM MasterRank WHERE GameID = ? " +
+                                "UNION ALL " +
+                                "SELECT * FROM Guild " +
+                                "UNION ALL " +
+                                "SELECT * FROM TopLane WHERE GameID = ? " +
+                                "UNION ALL " +
+                                "SELECT * FROM BotLane WHERE GameID = ? " +
+                                "UNION ALL " +
+                                "SELECT * FROM JungleLane WHERE GameID = ? " +
+                                "UNION ALL " +
+                                "SELECT * FROM MidLane WHERE GameID = ? " +
+                                "UNION ALL " +
+                                "SELECT * FROM SupportLane WHERE GameID = ? ";
+
+                        PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+                        String gameId = idEditText.getText().toString();
+                        preparedStatement.setString(1, gameId);
+                        preparedStatement.setString(2, gameId);
+                        preparedStatement.setString(3, gameId);
+                        preparedStatement.setString(4, gameId);
+                        preparedStatement.setString(5, gameId);
+                        preparedStatement.setString(6, gameId);
+                        preparedStatement.setString(7, gameId);
+                        preparedStatement.setString(8, gameId);
+                        preparedStatement.setString(9, gameId);
+
+                        ResultSet rs = preparedStatement.executeQuery();
+
+                        while (rs.next()) {
+                            // Handle retrieving data from the ResultSet for each table
+                            // Example:
+                            String retrievedGameID = rs.getString("GameID");
+                            String retrievedIGN = rs.getString("IGN");
+                            int retrievedPoints = rs.getInt("points");
+                            String retrievedLanePoints = rs.getString("LanePoints");
+
+                            // Do something with retrieved data
+                            Log.d("MainActivity", "GameID: " + retrievedGameID +
+                                    ", IGN: " + retrievedIGN +
+                                    ", Points: " + retrievedPoints +
+                                    ", LanePoints: " + retrievedLanePoints);
+                        }
+                        rs.close();
+                        preparedStatement.close();
+                    }
+                } catch (SQLException e) {
+                    Log.e("MainActivity", "SQL Error: " + e.getMessage());
+                }
+            }
+        });
+    }
+
+    // Implement your connectionclass() method here
+    private Connection connectionclass() {
+        // Implement your connection logic here
+        return null; // Return your Connection object
+    }
+}
